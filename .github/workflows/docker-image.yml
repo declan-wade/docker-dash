@@ -21,8 +21,15 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build and push
-      uses: docker/build-push-action@v3
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action
       with:
+        images: hundamiee/dockerdash
+    - name: Build and push Docker image
+      uses: docker/build-push-action
+      with:
+        context: .
         push: true
-        tags: gundamire/dockerdash:$(date +%s)
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
